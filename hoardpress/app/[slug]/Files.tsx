@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { getArchiveFilesBySlug } from "@/lib/actions/filesystem.action";
 import { FileInfo } from "@/lib/models/file.model";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function FilesList({ slug }: { slug: string }) {
@@ -44,7 +45,9 @@ export default function FilesList({ slug }: { slug: string }) {
             <TableCell>{modified.toString()}</TableCell>
             <TableCell className="text-right">{size} Bytes</TableCell>
             <TableCell className="text-right">
-              <Button>Download</Button>
+              <Button asChild>
+                <Link href={`/${slug}/download/${name}`} target="_blank">Download</Link>
+              </Button>
             </TableCell>
           </TableRow>
         ))}
