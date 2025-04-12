@@ -1,5 +1,6 @@
 "use client";
 
+import FileIcon from "@/components/shared/FileIcon";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -11,7 +12,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getArchiveFilesBySlug } from "@/lib/actions/filesystem.action";
+import { getFileIcon } from "@/lib/getFileIcon";
 import { FileInfo } from "@/lib/models/file.model";
+import { getFileExtension, humanFileSize } from "@/lib/utils";
+import { Download, Image } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -30,8 +34,9 @@ export default function FilesList({ slug }: { slug: string }) {
 
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className="bg-black/10">
         <TableRow>
+          <TableHead></TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Last modified</TableHead>
           <TableHead className="text-right">Size</TableHead>
@@ -41,12 +46,19 @@ export default function FilesList({ slug }: { slug: string }) {
       <TableBody>
         {files.map(({ name, size, modified }, index) => (
           <TableRow key={index}>
+            <TableCell className="font-medium">
+              <Button variant="ghost" size="icon" disabled>
+                <FileIcon extension={getFileExtension(name)} />
+              </Button>
+            </TableCell>
             <TableCell className="font-medium">{name}</TableCell>
-            <TableCell>{modified.toString()}</TableCell>
-            <TableCell className="text-right">{size} Bytes</TableCell>
+            <TableCell>{modified.toLocaleString()}</TableCell>
+            <TableCell className="text-right">{humanFileSize(size)}</TableCell>
             <TableCell className="text-right">
-              <Button asChild>
-                <Link href={`/${slug}/download/${name}`} target="_blank">Download</Link>
+              <Button asChild variant="ghost" size="icon">
+                <Link href={`/${slug}/download/${name}`} target="_blank">
+                  <Download />
+                </Link>
               </Button>
             </TableCell>
           </TableRow>

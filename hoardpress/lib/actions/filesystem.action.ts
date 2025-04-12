@@ -9,7 +9,10 @@ import db from "../database";
 import { Archive } from "../models/archive.model";
 import { FileInfo } from "../models/file.model";
 
-export async function getArchivedFolders() {
+/**
+ * Get a list of folder names inside the archive storage folder
+ */
+export async function getArchivedFolders(): Promise<string[]> {
   try {
     const directoryPath = path.join(
       process.cwd(),
@@ -36,6 +39,9 @@ export async function getArchivedFolders() {
   }
 }
 
+/**
+ * Get a single archive by a URL slug
+ */
 export async function getArchiveBySlug(slug: string): Promise<any> {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM archive WHERE slug = ?", [slug], (error, row) => {
@@ -48,7 +54,10 @@ export async function getArchiveBySlug(slug: string): Promise<any> {
   });
 }
 
-export async function getArchiveFilesBySlug(slug: string) {
+/**
+ * Get a list of files from an archive by a URL slug
+ */
+export async function getArchiveFilesBySlug(slug: string): Promise<FileInfo[]> {
   const archive: Archive = await getArchiveBySlug(slug);
   const directoryPath = path.join(process.cwd(), process.env.DATABASE_PATH as string, "files", archive.folder);
   let files: FileInfo[] = [];
@@ -73,6 +82,25 @@ export async function getArchiveFilesBySlug(slug: string) {
   return files;
 }
 
+/**
+ * Return a list of all archives
+ */
+export async function getArchives(): Promise<Archive[]> {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM archive", (error, rows) => {
+      if (error) {
+        reject(error);
+        handleError(error);
+      } else {
+        resolve(rows as Archive[]);
+      }
+    });
+  });
+}
+
+/**
+ * Update an archive details by URL slug
+ */
 export async function updateArchive({ slug, description, author }: { slug: string; description: string; author: string }) {
   try {
     await new Promise<void>((resolve, reject) => {
@@ -88,6 +116,9 @@ export async function updateArchive({ slug, description, author }: { slug: strin
   }
 }
 
+/**
+ * Scan the filesystem for changes in the archive storage folder
+ */
 export async function scanArchivedFolders() {
   try {
     // Get all folders inside filesystem

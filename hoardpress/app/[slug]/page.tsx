@@ -19,23 +19,29 @@ export default async function ArchiveDetails({
     notFound();
 
   return (
-    <div className="px-5 flex flex-col gap-10">
+    <div className="px-5 mt-10">
       {/* Cover */}
-      <div className="w-full h-[350px] bg-black/10 rounded-b-2xl" />
+      {/* <div className="w-full h-[350px] bg-black/10 rounded-b-2xl" /> */}
 
       {/* Items List */}
       <div className="mx-10 flex gap-10">
-        <div className="w-full flex flex-col gap-10">
-          <div>
-            <h3>{archive.folder}</h3>
-            {archive.author && <span className="text-sm">By <Link href="#" className="text-primary">{archive.author}</Link></span>}
-            <p className="whitespace-pre-line">{archive.description}</p>
+        <div className="flex-1 flex flex-col gap-10 min-w-0">
+          <div className="flex gap-10">
+            <div className="aspect-square h-[250px] bg-black/10 rounded-2xl" />
+            <div className="h-fit">
+              <h3>{archive.folder}</h3>
+              {archive.author && <span className="text-sm">By <Link href="#" className="text-primary">{archive.author}</Link></span>}
+              
+              <p className="whitespace-pre-line">{archive.description}</p>
+            </div>
           </div>
 
-          <FilesList slug={slug} />
+          <div className="overflow-x-auto max-w-full">
+            <FilesList slug={slug} />
+          </div>
         </div>
 
-        <div className="w-[400px] bg-black/10 rounded-2xl p-5 space-y-2.5">
+        <div className="w-[250px] shrink-0 bg-black/10 rounded-2xl p-5 space-y-2.5">
           <h4>Settings</h4>
           <Edit archive={archive} />
 
