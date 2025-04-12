@@ -1,0 +1,106 @@
+"use server";
+
+import fs from "fs";
+import path from "path";
+import { handleError, slugify } from "../utils";
+import logger from "../logger";
+import "../database";
+import db from "../database";
+import { Archive } from "../models/archive.model";
+import { FileInfo } from "../models/file.model";
+
+export async function getArchivedFolders() {
+  try {
+    const directoryPath = path.join(
+      process.cwd(),
+      process.env.DATABASE_PATH as string,
+      "files"
+    );
+    const files = await fs.promises.readdir(directoryPath);
+    const directories = [];
+
+    for (const file of files) {
+      const filePath = path.join(directoryPath, file);
+      const stat = await fs.promises.stat(filePath);
+
+      if (stat.isDirectory()) {
+        logger.info(`Scanned "${file}"`);
+        directories.push(file);
+      }
+    }
+
+    return directories;
+  } catch (error) {
+    handleError(error);
+    return [];
+  }
+}
+
+export async function getArchiveBySlug(slug: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    db.get("SELECT * FROM archive WHERE slug = ?", [slug], (error, row) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+export async function getArchiveFilesBySlug(slug: string) {
+  const archive: Archive = await getArchiveBySlug(slug);
+  const directoryPath = path.join(process.cwd(), process.env.DATABASE_PATH as string, "files", archive.folder);
+  let files: FileInfo[] = [];
+
+  try {
+    const entries = fs.readdirSync(directoryPath, { withFileTypes: true });
+
+    files = entries.filter((entry) => entry.isFile()).map((entry) => {
+      const filePath = path.join(directoryPath, entry.name);
+      const stats = fs.statSync(filePath);
+
+      return {
+        name: entry.name,
+        size: stats.size,
+        modified: stats.mtime,
+      };
+    });
+  } catch (error) {
+    handleError(error);
+  }
+
+  return files;
+}
+
+export async function updateArchive({ slug, description, author }: { slug: string; description: string; author: string }) {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      db.run(`UPDATE archive SET description = ?, author = ? WHERE slug = ?`, [description, author, slug], (error) => {
+        if (error) return reject(error);
+        resolve();
+      });
+    });
+
+    logger.info(`Updated archive "${slug}"`);
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+export async function scanArchivedFolders() {
+  try {
+    // Get all folders inside filesystem
+    const folders = await getArchivedFolders();
+
+    folders.map((folder: string) => {
+      // Create new item for each archive folder in database
+      db.run("INSERT INTO archive(folder, slug) SELECT ? AS folder, ? AS slug WHERE NOT EXISTS (SELECT 1 FROM archive WHERE folder = ?)", [folder, slugify(folder), folder], (error) => {
+        if (error) handleError(error);
+        logger.info(`Added "${folder}" to database`);
+      });
+    });
+  } catch (error) {
+    handleError(error);
+  }
+}
