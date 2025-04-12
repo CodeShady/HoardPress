@@ -15,12 +15,22 @@ import {
   FileAudio,
   FileVideo,
   FileJson,
-  Disc
+  Disc,
+  Gamepad,
+  Joystick
 } from 'lucide-react';
 
 type IconComponent = React.FC<React.SVGProps<SVGSVGElement>>;
 
 const extensionMap: Record<string, IconComponent> = {
+  // Emulation
+  rvz: Gamepad,
+  nes: Gamepad,
+  gb: Gamepad,
+  gbc: Gamepad,
+  snes: Gamepad,
+  swf: Joystick,
+
   // Images
   jpg: Image,
   jpeg: Image,

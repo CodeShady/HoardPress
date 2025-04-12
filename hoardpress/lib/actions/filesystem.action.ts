@@ -2,12 +2,13 @@
 
 import fs from "fs";
 import path from "path";
-import { handleError, slugify } from "../utils";
+import { getFileExtension, handleError, slugify } from "../utils";
 import logger from "../logger";
 import "../database";
 import db from "../database";
 import { Archive } from "../models/archive.model";
 import { FileInfo } from "../models/file.model";
+import { config } from "../config";
 
 /**
  * Get a list of folder names inside the archive storage folder
@@ -65,7 +66,7 @@ export async function getArchiveFilesBySlug(slug: string): Promise<FileInfo[]> {
   try {
     const entries = fs.readdirSync(directoryPath, { withFileTypes: true });
 
-    files = entries.filter((entry) => entry.isFile()).map((entry) => {
+    files = entries.filter((entry) => entry.isFile() && !config.ignoredExtensions.includes(entry.name)).map((entry) => {
       const filePath = path.join(directoryPath, entry.name);
       const stats = fs.statSync(filePath);
 

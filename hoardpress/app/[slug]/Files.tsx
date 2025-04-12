@@ -12,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getArchiveFilesBySlug } from "@/lib/actions/filesystem.action";
-import { getFileIcon } from "@/lib/getFileIcon";
 import { FileInfo } from "@/lib/models/file.model";
 import { getFileExtension, humanFileSize } from "@/lib/utils";
 import { Download, Image } from "lucide-react";
@@ -56,7 +55,7 @@ export default function FilesList({ slug }: { slug: string }) {
             <TableCell className="text-right">{humanFileSize(size)}</TableCell>
             <TableCell className="text-right">
               <Button asChild variant="ghost" size="icon">
-                <Link href={`/${slug}/download/${name}`} target="_blank">
+                <Link href={`/${slug}/download/${encodeURIComponent(name)}`} target="_blank">
                   <Download />
                 </Link>
               </Button>

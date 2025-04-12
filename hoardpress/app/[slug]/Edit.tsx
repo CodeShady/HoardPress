@@ -17,15 +17,25 @@ import { updateArchive } from "@/lib/actions/filesystem.action";
 import { Archive } from "@/lib/models/archive.model";
 import { useState } from "react";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 type EditForm = {
   description: string;
   author: string;
+  color: string;
 };
 
 export default function Edit({ archive }: { archive: Archive }) {
   const [form, setForm] = useState<EditForm>({
     description: archive.description || "",
     author: archive.author || "",
+    color: "#ffffff",
   });
 
   async function handleFormSubmit() {
@@ -87,7 +97,46 @@ export default function Edit({ archive }: { archive: Archive }) {
               className="col-span-3"
             />
           </div>
+
+          <div className="space-y-2.5">
+            <Label htmlFor="color" className="text-right">
+              Category
+            </Label>
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Software</SelectItem>
+                <SelectItem value="dark">Art</SelectItem>
+                <SelectItem value="system">Books</SelectItem>
+                <SelectItem value="music">Music</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2.5">
+            <Label htmlFor="color" className="text-right">
+              Color
+            </Label>
+            <div className="flex gap-2.5">
+              <Input
+                id="color"
+                value={form.color}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, color: e.target.value }))
+                }
+                className="col-span-3"
+              />
+              <div
+                className="h-9 w-9 rounded-md aspect-square border transition-colors"
+                style={{ backgroundColor: form.color }}
+              />
+            </div>
+          </div>
         </div>
+
+
         <DialogFooter>
           <Button type="submit" onClick={handleFormSubmit}>
             Save changes

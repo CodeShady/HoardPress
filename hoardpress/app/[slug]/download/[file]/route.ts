@@ -7,6 +7,8 @@ import path from "path";
 import { lookup } from "mime-types";
 import { getArchiveBySlug } from "@/lib/actions/filesystem.action";
 import { Archive } from "@/lib/models/archive.model";
+import { stat } from "fs/promises";
+import { createReadStream } from "fs";
 
 type Params = {
   params: {
@@ -18,7 +20,7 @@ type Params = {
 export async function GET(req: Request, { params }: Params) {
   const urlParams = await params;
   const slug = urlParams.slug;
-  const file = urlParams.file;
+  const file = decodeURIComponent(urlParams.file);
 
   // Check if slug exists
   const archive: Archive = await getArchiveBySlug(slug);
@@ -26,26 +28,27 @@ export async function GET(req: Request, { params }: Params) {
     return new NextResponse("Archive does not exist", { status: 404 });
   }
 
-  // Sanitize file path input
-  const safeFile = path.basename(file);
+  // TODO: Sanitize input
+  
+  const filePath = path.join(
+    process.cwd(),
+    process.env.DATABASE_PATH as string,
+    "files",
+    archive.folder,
+    file
+  );
 
   // Retrieve file
   try {
-    const filePath = path.join(
-      process.cwd(),
-      process.env.DATABASE_PATH as string,
-      "files",
-      archive.folder,
-      safeFile
-    );
-    const fileBuffer = await readFile(filePath);
+    await stat(filePath);
+    const stream = createReadStream(filePath);
     const mimeType = lookup(filePath) || "application/octet-stream";
 
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(stream as any, {
       status: 200,
       headers: {
         "Content-Type": mimeType,
-        "Content-Disposition": `attachment; filename="${safeFile}"`,
+        "Content-Disposition": `attachment; filename="${file}"`,
       },
     });
   } catch (error) {
