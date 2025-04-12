@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 import { getArchiveBySlug } from "@/lib/actions/filesystem.action";
 import { Archive } from "@/lib/models/archive.model";
 import { notFound } from "next/navigation";
 import FilesList from "./Files";
 import Edit from "./Edit";
+import { Settings } from "@/lib/settings";
 
 export default async function ArchiveDetails({
   params
@@ -14,9 +14,11 @@ export default async function ArchiveDetails({
 }) {
   const slug = (await params).slug;
   const archive: Archive = await getArchiveBySlug(slug);
-
+  
   if (!archive)
     notFound();
+
+  const categoryKey = archive.category as keyof typeof Settings.categories;
 
   return (
     <div className="px-5 mt-10">
@@ -27,7 +29,10 @@ export default async function ArchiveDetails({
       <div className="mx-10 flex gap-10">
         <div className="flex-1 flex flex-col gap-10 min-w-0">
           <div className="flex gap-10">
-            <div className="aspect-square h-[250px] bg-black/10 rounded-2xl" />
+            <div className="aspect-square h-[250px] rounded-2xl border flex justify-center items-center" style={{ backgroundColor: archive.color || "transparent" }}>
+              {categoryKey in Settings.categories && Settings.categories[categoryKey].icon}
+            </div>
+            
             <div className="h-fit">
               <h3>{archive.folder}</h3>
               {archive.author && <span className="text-sm">By <Link href="#" className="text-primary">{archive.author}</Link></span>}

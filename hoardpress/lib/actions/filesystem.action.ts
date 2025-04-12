@@ -8,7 +8,7 @@ import "../database";
 import db from "../database";
 import { Archive } from "../models/archive.model";
 import { FileInfo } from "../models/file.model";
-import { config } from "../config";
+import { Settings } from "../settings";
 
 /**
  * Get a list of folder names inside the archive storage folder
@@ -66,7 +66,7 @@ export async function getArchiveFilesBySlug(slug: string): Promise<FileInfo[]> {
   try {
     const entries = fs.readdirSync(directoryPath, { withFileTypes: true });
 
-    files = entries.filter((entry) => entry.isFile() && !config.ignoredExtensions.includes(entry.name)).map((entry) => {
+    files = entries.filter((entry) => entry.isFile() && !Settings.ignoredExtensions.includes(entry.name)).map((entry) => {
       const filePath = path.join(directoryPath, entry.name);
       const stats = fs.statSync(filePath);
 
@@ -102,10 +102,10 @@ export async function getArchives(): Promise<Archive[]> {
 /**
  * Update an archive details by URL slug
  */
-export async function updateArchive({ slug, description, author }: { slug: string; description: string; author: string }) {
+export async function updateArchive({ slug, description, author, color, category }: { slug: string; description: string; author: string; color: string; category: string }) {
   try {
     await new Promise<void>((resolve, reject) => {
-      db.run(`UPDATE archive SET description = ?, author = ? WHERE slug = ?`, [description, author, slug], (error) => {
+      db.run(`UPDATE archive SET description = ?, author = ?, color = ?, category = ? WHERE slug = ?`, [description, author, color, category, slug], (error) => {
         if (error) return reject(error);
         resolve();
       });

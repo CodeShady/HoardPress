@@ -5,4 +5,6 @@ export type Archive = {
   author: string | null;
   description: string | null;
   image: string | null;
+  color: string | null;
+  category: string | null;
 }

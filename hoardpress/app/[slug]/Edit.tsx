@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -24,18 +25,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Settings } from "@/lib/settings";
+import { useRouter } from "next/navigation";
 
 type EditForm = {
   description: string;
   author: string;
   color: string;
+  category: string;
 };
 
 export default function Edit({ archive }: { archive: Archive }) {
+  const router = useRouter();
   const [form, setForm] = useState<EditForm>({
     description: archive.description || "",
     author: archive.author || "",
-    color: "#ffffff",
+    color: archive.color || "",
+    category: archive.category || "",
   });
 
   async function handleFormSubmit() {
@@ -44,8 +50,11 @@ export default function Edit({ archive }: { archive: Archive }) {
       slug: archive.slug,
       description: form.description,
       author: form.author,
+      color: form.color,
+      category: form.category,
     });
-    console.log(result);
+
+    setTimeout(() => router.refresh(), 300);
   }
 
   return (
@@ -102,15 +111,14 @@ export default function Edit({ archive }: { archive: Archive }) {
             <Label htmlFor="color" className="text-right">
               Category
             </Label>
-            <Select>
+            <Select value={form.category} onValueChange={(value) => setForm((prev) => ({ ...prev, category: value }))}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="light">Software</SelectItem>
-                <SelectItem value="dark">Art</SelectItem>
-                <SelectItem value="system">Books</SelectItem>
-                <SelectItem value="music">Music</SelectItem>
+                {Object.keys(Settings.categories).map((category: string, index: number) => (
+                  <SelectItem key={index} value={category}>{category}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -136,11 +144,12 @@ export default function Edit({ archive }: { archive: Archive }) {
           </div>
         </div>
 
-
         <DialogFooter>
-          <Button type="submit" onClick={handleFormSubmit}>
-            Save changes
-          </Button>
+          <DialogClose asChild>
+            <Button type="submit" onClick={handleFormSubmit}>
+              Save changes
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NavigationBar } from "@/components/shared/NavigationBar";
 import Logo from "@/components/shared/Logo";
+import { setupDatabase } from "@/lib/database";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Ensure the database is setup
+  setupDatabase();
+
   return (
     <html lang="en">
       <body
