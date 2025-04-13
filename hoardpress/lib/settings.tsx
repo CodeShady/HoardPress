@@ -1,7 +1,7 @@
 import { Book, Disc3, File, FolderCode, Gamepad, Music } from "lucide-react";
 
 export const Settings = {
-  ignoredExtensions: [".DS_Store"],
+  ignoredExtensions: [".DS_Store", ".localized"],
   categories: {
     "Gaming": {
       icon: <Gamepad size={64} />

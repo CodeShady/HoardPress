@@ -71,6 +71,7 @@ export async function getArchiveFilesBySlug(slug: string): Promise<FileInfo[]> {
       const stats = fs.statSync(filePath);
 
       return {
+        parent: slug,
         name: entry.name,
         size: stats.size,
         modified: stats.mtime,

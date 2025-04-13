@@ -1,5 +1,6 @@
 "use server";
 
+import { Base64 } from 'js-base64';
 import { handleError } from "@/lib/utils";
 import { readFile } from "fs/promises";
 import { NextResponse } from "next/server";
@@ -9,6 +10,7 @@ import { getArchiveBySlug } from "@/lib/actions/filesystem.action";
 import { Archive } from "@/lib/models/archive.model";
 import { stat } from "fs/promises";
 import { createReadStream } from "fs";
+import { Readable } from 'stream';
 
 type Params = {
   params: {
@@ -20,7 +22,9 @@ type Params = {
 export async function GET(req: Request, { params }: Params) {
   const urlParams = await params;
   const slug = urlParams.slug;
-  const file = decodeURIComponent(urlParams.file);
+  const file = Base64.decode(urlParams.file);
+
+  console.log("FILE NAME =", file);
 
   // Check if slug exists
   const archive: Archive = await getArchiveBySlug(slug);
@@ -44,12 +48,21 @@ export async function GET(req: Request, { params }: Params) {
     const stream = createReadStream(filePath);
     const mimeType = lookup(filePath) || "application/octet-stream";
 
-    return new NextResponse(stream as any, {
+    const readable = Readable.toWeb(stream);
+
+    const headers = new Headers();
+    headers.set("Content-Type", mimeType);
+
+    // Sanitize filename to avoid encoding issues
+    const encodedFileName = encodeURIComponent(file).replace(/%20/g, ' ');
+    headers.set(
+      "Content-Disposition",
+      `attachment; filename*=UTF-8''${encodedFileName}`
+    );
+
+    return new Response(readable as any, {
       status: 200,
-      headers: {
-        "Content-Type": mimeType,
-        "Content-Disposition": `attachment; filename="${file}"`,
-      },
+      headers,
     });
   } catch (error) {
     handleError(error);

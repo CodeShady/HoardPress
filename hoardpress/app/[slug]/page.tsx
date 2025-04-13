@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import FilesList from "./Files";
 import Edit from "./Edit";
 import { Settings } from "@/lib/settings";
+import { Badge } from "@/components/ui/badge";
 
 export default async function ArchiveDetails({
   params
@@ -36,14 +37,13 @@ export default async function ArchiveDetails({
             <div className="h-fit">
               <h3>{archive.folder}</h3>
               {archive.author && <span className="text-sm">By <Link href="#" className="text-primary">{archive.author}</Link></span>}
+              {archive.category && <Badge className="block mt-2">{archive.category}</Badge>}
               
               <p className="whitespace-pre-line">{archive.description}</p>
             </div>
           </div>
 
-          <div className="overflow-x-auto max-w-full">
-            <FilesList slug={slug} />
-          </div>
+          <FilesList slug={slug} />
         </div>
 
         <div className="w-[250px] shrink-0 bg-black/10 rounded-2xl p-5 space-y-2.5">
