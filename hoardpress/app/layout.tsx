@@ -4,6 +4,8 @@ import "./globals.css";
 import { NavigationBar } from "@/components/shared/NavigationBar";
 import Logo from "@/components/shared/Logo";
 import { setupDatabase } from "@/lib/database";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,19 +31,29 @@ export default function RootLayout({
   setupDatabase();
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="p-5 flex flex-col gap-5">
-          <header className="wrapper flex items-center gap-5">
-            <Logo />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="p-5 flex flex-col gap-5">
+            <header className="wrapper flex items-center justify-between">
+              <div className="flex items-center gap-5">
+                <Logo />
+                <NavigationBar />
+              </div>
 
-            <NavigationBar />
-          </header>
+              <ThemeToggle />
+            </header>
 
-          {children}
-        </div>
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

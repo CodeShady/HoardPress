@@ -16,7 +16,7 @@ export default function ArchiveCard({ archive }: { archive: Archive }) {
             alt="Cover image"
           />
         ) : (
-          <div className="w-auto h-auto aspect-square rounded-lg bg-black/10" />
+          <div className="w-auto h-auto aspect-square rounded-lg bg-accent" />
         )}
 
         <div className="flex flex-col">

@@ -19,18 +19,16 @@ export default async function ArchiveDetails({
 
   if (!archive) notFound();
 
-  const categoryKey = archive.category as keyof typeof Settings.categories;
-
   return (
     <div className="wrapper">
       {/* Items List */}
       <div className="flex gap-10">
         <div className="flex-1 flex flex-col gap-10 min-w-0">
-          <div className="flex gap-10">
+          <div className="flex gap-10 mt-5">
             {archive.image ? (
-              <Image className="aspect-square h-[250px] object-cover border rounded-2xl" src={archive.image} width={250} height={250} alt="Cover Image" style={{ backgroundColor: archive.color || "transparent" }} />
+              <Image className="aspect-square h-[250px] object-cover rounded-2xl" src={archive.image} width={250} height={250} alt="Cover Image" style={{ backgroundColor: archive.color || "transparent" }} />
              ) : (
-              <div className="border h-[250px] aspect-square rounded-2xl" />
+              <div className="h-[250px] w-auto aspect-square rounded-2xl bg-accent" />
             )}
 
             <div className="h-fit w-full">
