@@ -7,10 +7,14 @@ import { scanArchivedFolders } from "@/lib/actions/filesystem.action";
 
 export default function Home() {
   return (
-    <div className="">
-      <Button onClick={() => scanArchivedFolders()}>Scan Filesystem</Button>
-      
-      <ExploreArchives />
+    <div className="wrapper py-5">
+      {/* <Button onClick={() => scanArchivedFolders()}>Scan Filesystem</Button> */}
+
+      <div className="flex flex-col gap-10">
+        <ExploreArchives />
+        <ExploreArchives />
+        <ExploreArchives />
+      </div>
     </div>
   );
 }

@@ -11,16 +11,19 @@ export default function ExploreArchives() {
   useEffect(() => {
     async function fetchArchives() {
       const list = await getArchives();
-      setArchives(list);
+      setArchives([...list, ...list]);
     }
     fetchArchives();
   }, []);
 
   return (
-    <div className="grid grid-cols-6">
-      {archives.map((archive: Archive, index: number) => (
-        <ArchiveCard key={index} archive={archive} />
-      ))}
+    <div className="flex flex-col gap-5">
+      <h3>Explore Archives</h3>
+      <div className="flex overflow-x-scroll no-scrollbar gap-5 w-full">
+        {archives.map((archive: Archive, index: number) => (
+          <ArchiveCard key={index} archive={archive} />
+        ))}
+      </div>
     </div>
   );
 }

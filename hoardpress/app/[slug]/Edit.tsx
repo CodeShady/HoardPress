@@ -27,12 +27,14 @@ import {
 } from "@/components/ui/select";
 import { Settings } from "@/lib/settings";
 import { useRouter } from "next/navigation";
+import { Pencil } from "lucide-react";
 
 type EditForm = {
   description: string;
   author: string;
   color: string;
   category: string;
+  image: string;
 };
 
 export default function Edit({ archive }: { archive: Archive }) {
@@ -42,16 +44,14 @@ export default function Edit({ archive }: { archive: Archive }) {
     author: archive.author || "",
     color: archive.color || "",
     category: archive.category || "",
+    image: archive.image || "",
   });
 
   async function handleFormSubmit() {
     // Save changes
     const result = await updateArchive({
       slug: archive.slug,
-      description: form.description,
-      author: form.author,
-      color: form.color,
-      category: form.category,
+      ...form
     });
 
     setTimeout(() => router.refresh(), 300);
@@ -60,14 +60,13 @@ export default function Edit({ archive }: { archive: Archive }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Edit Archive</Button>
+        <Button title="Edit Archive" variant="ghost">
+          <Pencil />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Archive</DialogTitle>
-          <DialogDescription>
-            Make changes to this archive here. Click save when you're done.
-          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="space-y-2.5">
@@ -93,6 +92,7 @@ export default function Edit({ archive }: { archive: Archive }) {
               className="col-span-3 h-40"
             />
           </div>
+          
           <div className="space-y-2.5">
             <Label htmlFor="author" className="text-right">
               Author
@@ -103,6 +103,21 @@ export default function Edit({ archive }: { archive: Archive }) {
               onChange={(e) =>
                 setForm((prev) => ({ ...prev, author: e.target.value }))
               }
+              className="col-span-3"
+            />
+          </div>
+
+          <div className="space-y-2.5">
+            <Label htmlFor="image" className="text-right">
+              Cover Image (URL)
+            </Label>
+            <Input
+              id="image"
+              value={form.image}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, image: e.target.value }))
+              }
+              placeholder="https://example.com/uploads/image.png"
               className="col-span-3"
             />
           </div>

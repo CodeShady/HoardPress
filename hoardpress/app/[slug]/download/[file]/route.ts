@@ -24,8 +24,6 @@ export async function GET(req: Request, { params }: Params) {
   const slug = urlParams.slug;
   const file = Base64.decode(urlParams.file);
 
-  console.log("FILE NAME =", file);
-
   // Check if slug exists
   const archive: Archive = await getArchiveBySlug(slug);
   if (!archive) {

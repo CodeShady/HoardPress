@@ -103,10 +103,10 @@ export async function getArchives(): Promise<Archive[]> {
 /**
  * Update an archive details by URL slug
  */
-export async function updateArchive({ slug, description, author, color, category }: { slug: string; description: string; author: string; color: string; category: string }) {
+export async function updateArchive({ slug, description, author, color, category, image }: { slug: string; description: string; author: string; color: string; category: string; image: string }) {
   try {
     await new Promise<void>((resolve, reject) => {
-      db.run(`UPDATE archive SET description = ?, author = ?, color = ?, category = ? WHERE slug = ?`, [description, author, color, category, slug], (error) => {
+      db.run(`UPDATE archive SET description = ?, author = ?, color = ?, category = ?, image = ? WHERE slug = ?`, [description, author, color, category, image, slug], (error) => {
         if (error) return reject(error);
         resolve();
       });

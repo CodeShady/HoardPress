@@ -34,7 +34,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="p-5 flex flex-col gap-5">
-          <header className="flex items-center gap-5">
+          <header className="wrapper flex items-center gap-5">
             <Logo />
 
             <NavigationBar />

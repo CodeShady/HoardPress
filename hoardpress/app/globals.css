@@ -139,4 +139,18 @@
   p {
     @apply leading-7 [&:not(:first-child)]:mt-6;
   }
+  
+  /* Spacing */
+  .wrapper {
+    @apply max-w-7xl lg:mx-auto md:px-10 xl:px-0 w-full;
+  }
+
+  /* No Scrollbar */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

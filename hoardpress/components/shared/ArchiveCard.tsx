@@ -1,40 +1,33 @@
 import { Archive } from "@/lib/models/archive.model";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import Link from "next/link";
-import { Settings } from "@/lib/settings";
-import { Button } from "../ui/button";
+import Image from "next/image";
 
 export default function ArchiveCard({ archive }: { archive: Archive }) {
-  const categoryKey = archive.category as keyof typeof Settings.categories;
-
   return (
-    <Card>
-      <CardHeader>
-        <div
-          className="mb-2.5 aspect-square w-full rounded-2xl border flex justify-center items-center"
-          style={{ backgroundColor: archive.color || "transparent" }}
-        >
-          {categoryKey in Settings.categories &&
-            Settings.categories[categoryKey].icon}
-        </div>
+    <Link href={`/${archive.slug}`}>
+      <div className="w-[200px] flex flex-col gap-2.5 rounded-xl hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 transition-all hover:p-2.5">
+        {archive.image ? (
+          <Image
+            className="w-auto h-auto aspect-square rounded-lg object-cover"
+            style={{ backgroundColor: archive.color || "transparent" }}
+            src={archive.image}
+            width={256}
+            height={256}
+            alt="Cover image"
+          />
+        ) : (
+          <div className="w-auto h-auto aspect-square rounded-lg bg-black/10" />
+        )}
 
-        <CardTitle>{archive.folder}</CardTitle>
-        <CardDescription className="truncate">
-          {archive.description}
-        </CardDescription>
-      </CardHeader>
-      <CardFooter className="justify-end">
-        <Button asChild>
-          <Link href={`/${archive.slug}`}>View</Link>
-        </Button>
-      </CardFooter>
-    </Card>
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold truncate">
+            {archive.folder}
+          </span>
+          <span className="text-xs font-medium opacity-50">
+            {archive.author || "No Author"}
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
