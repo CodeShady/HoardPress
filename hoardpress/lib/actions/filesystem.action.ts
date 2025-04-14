@@ -101,6 +101,22 @@ export async function getArchives(): Promise<Archive[]> {
 }
 
 /**
+ * Return a list of all archives in a category
+ */
+export async function getArchivesByCategory(category: keyof typeof Settings.categories): Promise<Archive[]> {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM archive WHERE category = ?", [category], (error, rows) => {
+      if (error) {
+        reject(error);
+        handleError(error);
+      } else {
+        resolve(rows as Archive[]);
+      }
+    })
+  });
+}
+
+/**
  * Update an archive details by URL slug
  */
 export async function updateArchive({ slug, description, author, color, category, image }: { slug: string; description: string; author: string; color: string; category: string; image: string }) {

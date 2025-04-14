@@ -2,7 +2,14 @@ import { Archive } from "@/lib/models/archive.model";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function ArchiveCard({ archive }: { archive: Archive }) {
+export default function ArchiveCard({ archive }: { archive?: Archive }) {
+  if (!archive) {
+    // No archived was passed, return a skeleton
+    return (
+      <div className="h-[250px] w-[200px] flex flex-col gap-2.5 rounded-xl bg-accent" />
+    );
+  }
+
   return (
     <Link href={`/${archive.slug}`}>
       <div className="w-[200px] flex flex-col gap-2.5 rounded-xl hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 transition-all hover:p-2.5">
