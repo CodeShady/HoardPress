@@ -137,7 +137,7 @@ export async function updateArchive({ slug, description, author, color, category
 /**
  * Scan the filesystem for changes in the archive storage folder
  */
-export async function scanArchivedFolders() {
+export async function scanArchivedFolders(): Promise<boolean> {
   try {
     // Get all folders inside filesystem
     const folders = await getArchivedFolders();
@@ -149,7 +149,10 @@ export async function scanArchivedFolders() {
         logger.info(`Added "${folder}" to database`);
       });
     });
+    
+    return true;
   } catch (error) {
     handleError(error);
+    return false;
   }
 }

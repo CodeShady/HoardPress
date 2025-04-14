@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { NavigationBar } from "@/components/shared/NavigationBar";
 import Logo from "@/components/shared/Logo";
 import { setupDatabase } from "@/lib/database";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import Buttons from "@/components/shared/buttons";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,10 +45,12 @@ export default function RootLayout({
             <header className="wrapper flex items-center justify-between">
               <div className="flex items-center gap-5">
                 <Logo />
-                <NavigationBar />
               </div>
 
-              <ThemeToggle />
+              <div className="flex items-center gap-1">
+                <Buttons.filesystem.scan />
+                <ThemeToggle />
+              </div>
             </header>
 
             {children}

@@ -38,8 +38,7 @@ import {
 import { humanFileSize } from "@/lib/utils";
 import { FileInfo } from "@/lib/models/file.model";
 import { getArchiveFilesBySlug } from "@/lib/actions/filesystem.action";
-import Link from "next/link";
-import DownloadFileButton from "@/components/shared/DownloadFileButton";
+import Buttons from "@/components/shared/buttons";
 
 export const columns: ColumnDef<FileInfo>[] = [
   {
@@ -104,9 +103,9 @@ export const columns: ColumnDef<FileInfo>[] = [
 
       return (
         <div className="flex items-center justify-end">
-          <DownloadFileButton fileURL={`/${file.parent}/download/${Base64.encode(file.name)}`}  />
+          <Buttons.downloadFile fileURL={`/${file.parent}/download/${Base64.encode(file.name)}`}  />
 
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
@@ -120,7 +119,7 @@ export const columns: ColumnDef<FileInfo>[] = [
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
       );
     },

@@ -1,9 +1,9 @@
 "use client";
 
 import { Download, LoaderCircle } from "lucide-react";
-import { Button } from "../ui/button";
 import { useState } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function DownloadFileButton({ fileURL }: { fileURL: string }) {
   const [clicked, setClicked] = useState<boolean>(false);
